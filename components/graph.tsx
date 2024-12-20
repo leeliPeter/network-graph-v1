@@ -18,17 +18,6 @@ const ForceGraph2D = dynamic(
   { ssr: false } // Disable server-side rendering
 );
 
-interface Filter {
-  財務: boolean;
-  內部: boolean;
-  市場值: boolean;
-  占比: boolean;
-  影響: boolean;
-  成長率: boolean;
-  景氣指數: boolean;
-  政策趨勢: boolean;
-}
-
 interface PropertyFilters {
   部門?: string;
   值?: string;
@@ -37,16 +26,6 @@ interface PropertyFilters {
 }
 
 export default function Graph() {
-  const [activeFilters, setActiveFilters] = useState<Filter>({
-    財務: false,
-    內部: false,
-    市場值: false,
-    占比: false,
-    影響: false,
-    成長率: false,
-    景氣指數: false,
-    政策趨勢: false,
-  });
   const [propertyFilters, setPropertyFilters] = useState<PropertyFilters>({});
   const [filter, setFilter] = useState<string[]>([]);
 
@@ -109,7 +88,7 @@ export default function Graph() {
         id: "A5",
         name: "原物料",
         properties: {
-          部門: "採購部",
+          部門: "採購���",
           值: "$1,000,000",
           比較基準: "$900,000",
           表現評估: "需改善",
@@ -155,7 +134,7 @@ export default function Graph() {
       },
       {
         id: "A9",
-        name: "中美景氣",
+        name: "中景氣",
         properties: {
           部門: "策略部",
           值: "92.5",
@@ -203,7 +182,7 @@ export default function Graph() {
       },
       {
         id: "B3",
-        name: "銷售組合",
+        name: "���售組合",
         properties: {
           部門: "銷售部",
           值: null,
@@ -353,7 +332,7 @@ export default function Graph() {
           值: "$1,200,000",
           比較基準: "$1,000,000",
           表現評估: "良好",
-          影響: ["銷貨收入", "市場需求"],
+          影響: ["銷貨收��", "市場需求"],
         },
         type: "策略",
       },
@@ -629,7 +608,7 @@ export default function Graph() {
           值: "88%",
           比較基準: "85%",
           表現評估: "良好",
-          影響: ["碳費", "��源效率"],
+          影響: ["碳費", "能源效率"],
         },
         type: "指標",
       },
@@ -727,7 +706,7 @@ export default function Graph() {
           表現評估: "良好",
           影響: ["市場競爭力", "品牌影響力"],
         },
-        type: "策略",
+        type: "���略",
       },
       {
         id: "F6",
@@ -824,7 +803,7 @@ export default function Graph() {
     });
 
     // Create links between filtered nodes
-    let links = new Set<string>();
+    const links = new Set<string>();
 
     for (let i = 0; i < filteredNodes.length; i++) {
       for (let j = i + 1; j < filteredNodes.length; j++) {
@@ -860,7 +839,7 @@ export default function Graph() {
       nodes: filteredNodes,
       links: Array.from(links).map((link) => JSON.parse(link)),
     };
-  }, [propertyFilters]);
+  }, [propertyFilters, allData.nodes]);
 
   // Get unique values for each property
   const propertyValues = useMemo(() => {
@@ -883,7 +862,7 @@ export default function Graph() {
     });
 
     return values;
-  }, []);
+  }, [allData.nodes]);
 
   // Function to add filter
   const addFilter = (key: string, value: string) => {
@@ -982,20 +961,17 @@ export default function Graph() {
       </div>
 
       <div className="flex flex-wrap gap-2 justify-center items-center mb-4">
-        {filter.map((f) => {
-          const [key, value] = f.split(": ");
-          return (
-            <Button
-              variant="outline"
-              key={f}
-              onClick={() => removeFilter(f)}
-              className="flex items-center gap-2"
-            >
-              {f}
-              <span className="ml-2 text-xs">×</span>
-            </Button>
-          );
-        })}
+        {filter.map((f) => (
+          <Button
+            variant="outline"
+            key={f}
+            onClick={() => removeFilter(f)}
+            className="flex items-center gap-2"
+          >
+            {f}
+            <span className="ml-2 text-xs">×</span>
+          </Button>
+        ))}
       </div>
 
       <CardContent>
